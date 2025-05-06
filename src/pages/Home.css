@@ -1,0 +1,131 @@
+.home-container {
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    background-color: #111;
+    min-height: 100vh;
+  }
+  
+  .hero {
+    background: url('/fondo-padel.jpg') center/cover no-repeat;
+    padding: 80px 20px;
+    text-align: center;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    color: #e30613;
+    margin-bottom: 10px;
+  }
+  
+  .hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .bienvenida {
+    font-size: 1.2rem;
+    color: #ccc;
+  }
+  
+  .aviso-login {
+    color: #ff6666;
+  }
+  
+  /* Sección resumen */
+  .resumen {
+    padding: 60px 20px;
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+  
+  .resumen h2 {
+    color: #e30613;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e30613;
+    display: inline-block;
+    padding-bottom: 10px;
+  }
+  
+  .resumen-datos {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .resumen-datos div {
+    background-color: #222;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+  }
+  
+  .resumen-datos div:hover {
+    transform: translateY(-5px);
+  }
+  
+  .resumen-datos h3 {
+    color: #e30613;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+  }
+  
+  .resumen-datos p {
+    font-size: 1rem;
+    color: #ccc;
+  }
+  
+  /* Info y contacto */
+  .info-section, .contacto {
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  
+  .info-section h2, .contacto h2 {
+    color: #e30613;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  ul li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .contacto a {
+    color: #e30613;
+    text-decoration: underline;
+  }
+  
+  .footer {
+    background-color: #222;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+  }
+  .logo-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .logo-container img {
+    max-width: 180px;
+    height: auto;
+  }
+  
