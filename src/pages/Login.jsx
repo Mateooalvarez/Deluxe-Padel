@@ -52,7 +52,7 @@ const Login = () => {
       </form>
 
       <div className="logo-container">
-        <img src="src/assets/logo.png" alt="Logo" />
+        <img src="public/assets/logo.png" alt="Logo" />
       </div>
     </div>
   );
