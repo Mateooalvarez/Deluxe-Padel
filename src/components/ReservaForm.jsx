@@ -16,15 +16,19 @@ const ReservaForm = () => {
     const usuarioLogueado = localStorage.getItem("usuarioLogueado");
     if (usuarioLogueado) {
       setNombre(usuarioLogueado);
-      const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
-      const misTurnos = turnosGuardados.filter(
-        t => t.nombre?.toLowerCase() === usuarioLogueado.toLowerCase()
-      );
-      setMisReservas(misTurnos);
+      actualizarReservas(usuarioLogueado);
     } else {
       setMisReservas([]);
     }
   }, []);
+
+  const actualizarReservas = (usuario) => {
+    const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
+    const misTurnos = turnosGuardados.filter(
+      t => t.nombre?.toLowerCase() === usuario.toLowerCase()
+    );
+    setMisReservas(misTurnos);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,26 +41,46 @@ const ReservaForm = () => {
     const nuevoTurno = { nombre, fecha: fecha.toLocaleDateString(), hora, cancha };
     const turnosExistentes = JSON.parse(localStorage.getItem('turnos')) || [];
 
-    const turnoExistente = turnosExistentes.find((turno) =>
-      turno.fecha === nuevoTurno.fecha &&
-      turno.hora === nuevoTurno.hora &&
-      turno.cancha === nuevoTurno.cancha
+    const turnoExistente = turnosExistentes.find(
+      (turno) =>
+        turno.fecha === nuevoTurno.fecha &&
+        turno.hora === nuevoTurno.hora &&
+        turno.cancha === nuevoTurno.cancha
     );
 
     if (turnoExistente) {
       setMensaje("Esta hora ya está reservada para la cancha seleccionada.");
     } else {
-      turnosExistentes.push(nuevoTurno);
-      localStorage.setItem('turnos', JSON.stringify(turnosExistentes));
+      const nuevosTurnos = [...turnosExistentes, nuevoTurno];
+      localStorage.setItem('turnos', JSON.stringify(nuevosTurnos));
       setMensaje("Reserva realizada con éxito.");
       setFecha(null);
       setHora('');
       setCancha(1);
+      actualizarReservas(nombre);
+    }
+  };
 
-      const actualizadas = turnosExistentes.filter(
-        t => t.nombre?.toLowerCase() === nombre.toLowerCase()
+  const handleCancelarReserva = (reservaCancelada) => {
+    // Mostrar confirmación antes de proceder con la cancelación
+    const confirmacion = window.confirm('¿Estás seguro de que deseas cancelar esta reserva?');
+
+    if (confirmacion) {
+      const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
+      const actualizados = turnosGuardados.filter(
+        (t) =>
+          !(
+            t.nombre === reservaCancelada.nombre &&
+            t.fecha === reservaCancelada.fecha &&
+            t.hora === reservaCancelada.hora &&
+            t.cancha === reservaCancelada.cancha
+          )
       );
-      setMisReservas(actualizadas);
+      localStorage.setItem('turnos', JSON.stringify(actualizados));
+      actualizarReservas(nombre);
+      setMensaje("Reserva cancelada correctamente.");
+    } else {
+      setMensaje("Cancelación de reserva cancelada.");
     }
   };
 
@@ -95,14 +119,29 @@ const ReservaForm = () => {
             <h3>Mis Reservas</h3>
             <ul style={{ listStyle: 'none', padding: 0 }}>
               {misReservas.map((reserva, index) => (
-                <li key={index}>
-                  📅 {reserva.fecha} 🕒 {reserva.hora} - Cancha {reserva.cancha}
+                <li key={index} style={{ marginBottom: '10px' }}>
+                  📅 {reserva.fecha} 🕒 {reserva.hora} - Cancha {reserva.cancha}{" "}
+                  <button
+                    onClick={() => handleCancelarReserva(reserva)}
+                    style={{
+                      marginLeft: '10px',
+                      backgroundColor: '#e30613',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '5px 10px',
+                      borderRadius: '5px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Cancelar
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
         )}
       </form>
+
       <div className="logo-container">
         <img src="src/assets/logo.png" alt="Logo" />
       </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import './Register.css'
 
 const Register = () => {
   const { register } = useAuth();
@@ -63,8 +64,13 @@ const Register = () => {
         />
         {error && <p className="error">{error}</p>}
         <button type="submit">Registrarse</button>
+        <div className="login-link">
+          ¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a>
+        </div>
       </form>
-    </div>
+      <div className="logo-container">
+        <img src="src/assets/logo.png" alt="Logo" />
+      </div>    </div>
   );
 };
 
