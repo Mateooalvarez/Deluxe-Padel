@@ -68,9 +68,7 @@ const Register = () => {
           ¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a>
         </div>
       </form>
-      <div className="logo-container">
-        <img src="public/assets/logo.png" alt="Logo" />
-      </div>    </div>
+        </div>
   );
 };
 

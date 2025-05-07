@@ -141,10 +141,6 @@ const ReservaForm = () => {
           </div>
         )}
       </form>
-
-      <div className="logo-container">
-        <img src="public/assets/logo.png" alt="Logo" />
-      </div>
     </div>
   );
 };

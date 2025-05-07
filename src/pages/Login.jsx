@@ -50,10 +50,6 @@ const Login = () => {
           No tienes cuenta? Regístrate
         </button>
       </form>
-
-      <div className="logo-container">
-        <img src="public/assets/logo.png" alt="Logo" />
-      </div>
     </div>
   );
 };
