@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,13 +10,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const success = login(email, password);
-
+    const success = await login(email, password);
     if (success) {
-      localStorage.setItem("usuarioLogueado", email); // Guardar usuario logueado
       navigate("/reservar");
     } else {
       setError("Credenciales incorrectas");
@@ -47,7 +44,7 @@ const Login = () => {
         {error && <p className="error">{error}</p>}
         <button type="submit">Ingresar</button>
         <button type="button" onClick={handleRegister}>
-          No tienes cuenta? Regístrate
+          ¿No tenés cuenta? Registrate
         </button>
       </form>
     </div>

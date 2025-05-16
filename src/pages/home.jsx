@@ -75,7 +75,7 @@ const Home = () => {
           Seguinos en <a href="https://www.instagram.com/deluxepadel.9dj?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">Instagram</a>
         </p>
         <div className="logo-container">
-          <img src="public/assets/logo.png" alt="Logo" />
+          <img src="/fondo-padel.jpg" alt="Logo" />
         </div>
       </footer>
     </div>

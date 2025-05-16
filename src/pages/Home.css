@@ -6,11 +6,11 @@
   }
   
   .hero {
-    background: url('/fondo-padel.jpg') center/cover no-repeat;
+    background-color: #e30613; /* o cualquier color sólido */
     padding: 80px 20px;
     text-align: center;
   }
-  
+      
   .hero-content h1 {
     font-size: 3rem;
     color: #e30613;

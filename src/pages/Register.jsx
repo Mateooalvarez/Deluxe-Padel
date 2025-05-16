@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import './Register.css'
+import "./Register.css";
 
 const Register = () => {
   const { register } = useAuth();
@@ -12,7 +12,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     if (!name || !email || !password || !confirmPassword) {
@@ -25,10 +25,10 @@ const Register = () => {
       return;
     }
 
-    const success = register(name, email, password);
+    const success = await register(name, email, password);
 
     if (success) {
-      navigate("/login"); // Redirige al login manual
+      navigate("/login");
     } else {
       setError("El correo ya está registrado");
     }
@@ -68,7 +68,7 @@ const Register = () => {
           ¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a>
         </div>
       </form>
-        </div>
+    </div>
   );
 };
 
