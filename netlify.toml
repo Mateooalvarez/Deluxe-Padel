@@ -1,7 +1,8 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+[build]
+  command = "npm run build"
+  publish = "dist"
 
-export default defineConfig({
-  plugins: [react()],
-  base: './', // <- clave para Netlify
-});
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
