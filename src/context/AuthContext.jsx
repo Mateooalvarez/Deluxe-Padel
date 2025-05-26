@@ -10,7 +10,8 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [reservas, setReservas] = useState([]);
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
+  console.log("✅ API_URL:", API_URL); // opcional para debug
   console.log("✅ API_URL:", API_URL);
   console.log("process.env:", process.env);
   console.log("API_URL:", process.env.REACT_APP_API_URL);
