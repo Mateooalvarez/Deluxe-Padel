@@ -11,6 +11,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [reservas, setReservas] = useState([]);
   const API_URL = process.env.REACT_APP_API_URL;
+  console.log("✅ API_URL:", API_URL);
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
