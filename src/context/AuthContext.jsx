@@ -14,7 +14,6 @@ export function AuthProvider({ children }) {
   console.log("✅ API_URL:", API_URL); // opcional para debug
   console.log("✅ API_URL:", API_URL);
   console.log("process.env:", process.env);
-  console.log("API_URL:", process.env.REACT_APP_API_URL);
 
 
 
