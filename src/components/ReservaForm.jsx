@@ -141,6 +141,9 @@ const ReservaForm = () => {
           </div>
         )}
       </form>
+      <div className="logo-container">
+        <img src="/fondo-padel.jpg" alt="Logo" />
+      </div>
     </div>
   );
 };
