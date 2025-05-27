@@ -68,7 +68,9 @@ const Register = () => {
           ¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a>
         </div>
       </form>
-      <img src="/fondo-padel.jpg" alt="Logo" />
+      <div className="logo-container">
+        <img src="/fondo-padel.jpg" alt="Logo" />
+      </div>
     </div>
   );
 };

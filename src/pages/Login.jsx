@@ -47,7 +47,9 @@ const Login = () => {
           ¿No tenés cuenta? Registrate
         </button>
       </form>
-      <img src="/fondo-padel.jpg" alt="Logo" />
+      <div className="logo-container">
+        <img src="/fondo-padel.jpg" alt="Logo" />
+      </div>
     </div>
   );
 };
