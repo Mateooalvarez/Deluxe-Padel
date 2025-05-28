@@ -16,6 +16,10 @@ const Header = () => {
           <li>
             <Link to="/reservar">Reservar Turno</Link>
           </li>
+          {/* Nuevo botón para ver reservas */}
+          <li>
+            <Link to="/ver-reservas">Ver Reservas</Link>
+          </li>
           {user ? (
             <li>
               <button onClick={logout}>Cerrar sesión</button>
