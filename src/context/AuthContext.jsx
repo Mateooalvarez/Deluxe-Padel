@@ -12,9 +12,6 @@ export function AuthProvider({ children }) {
   const [reservas, setReservas] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
-  console.log("✅ API_URL:", API_URL);
-  console.log("🧪 process.env:", process.env);
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -50,54 +47,53 @@ export function AuthProvider({ children }) {
     }
   };
 
-router.post('/register', async (req, res) => {
-  const { name, email, password, role = 'usuario' } = req.body;
-
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'El correo ya está registrado' });
+  const register = async (name, email, password) => {
+    try {
+      const res = await axios.post(`${API_URL}/register`, {
+        name,
+        email,
+        password,
+      });
+      if (res.data && res.data.token) {
+        setUser({
+          name: res.data.name,
+          email: res.data.email,
+          _id: res.data._id,
+          role: res.data.role || "usuario", // ✅ rol por defecto "usuario"
+          token: res.data.token,
+        });
+        console.log("✅ Usuario registrado y logueado:", res.data);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Error al registrarse:", err);
+      return false;
     }
-
-    const newUser = new User({ name, email, password, role }); // ✅ Se guarda el rol
-
-    await newUser.save();
-
-    // Crear token real
-    const token = jwt.sign(
-      { id: newUser._id, email: newUser.email, role: newUser.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    res.status(201).json({
-      message: 'Usuario registrado correctamente',
-      name: newUser.name,
-      email: newUser.email,
-      _id: newUser._id,
-      role: newUser.role,
-      token
-    });
-  } catch (error) {
-    console.error('Error al registrar usuario:', error);
-    res.status(500).json({ message: 'Error del servidor' });
-  }
-});
+  };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
   };
 
+  // Ejemplo de enviar token en headers para endpoint protegido
   const reservar = async (cancha, hora, userName) => {
     try {
-      const res = await axios.post(`${API_URL}/reservas`, {
-        cancha,
-        hora,
-        userName,
-      });
+      if (!user || !user.token) throw new Error("Usuario no autenticado");
+      
+      const res = await axios.post(
+        `${API_URL}/reservas`,
+        { cancha, hora, userName },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`, // <- token para autorizar
+          },
+        }
+      );
+
       if (res.data) {
-        setReservas([...reservas, res.data]);
+        setReservas((prev) => [...prev, res.data]);
       }
     } catch (err) {
       console.error("Error al reservar:", err);
