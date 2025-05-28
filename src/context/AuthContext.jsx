@@ -50,31 +50,39 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
-    try {
-      const res = await axios.post(`${API_URL}/register`, {
-        name,
-        email,
-        password,
-      });
-      if (res.data && res.data.token) {
-        const userData = {
-          name: res.data.name,
-          email: res.data.email,
-          _id: res.data._id,
-          role: res.data.role || "usuario", // ✅ si viene role lo usamos, si no, default
-          token: res.data.token,
-        };
-        setUser(userData);
-        console.log("✅ Usuario registrado:", userData);
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error("Error al registrarse:", err);
-      return false;
+router.post('/register', async (req, res) => {
+  const { name, email, password, role = 'usuario' } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'El correo ya está registrado' });
     }
-  };
+
+    const newUser = new User({ name, email, password, role }); // ✅ Se guarda el rol
+
+    await newUser.save();
+
+    // Crear token real
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      message: 'Usuario registrado correctamente',
+      name: newUser.name,
+      email: newUser.email,
+      _id: newUser._id,
+      role: newUser.role,
+      token
+    });
+  } catch (error) {
+    console.error('Error al registrar usuario:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+});
 
   const logout = () => {
     setUser(null);
