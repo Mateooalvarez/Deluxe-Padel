@@ -65,6 +65,7 @@ export function AuthProvider({ children }) {
           role: res.data.role || "usuario", // ✅ si viene role lo usamos, si no, default
           token: res.data.token,
         });
+        console.log("✅ Usuario logueado:", userData); // <-- ESTE
         return true;
       }
       return false;
