@@ -11,11 +11,9 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [reservas, setReservas] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
-  console.log("✅ API_URL:", API_URL); // opcional para debug
+
   console.log("✅ API_URL:", API_URL);
-  console.log("process.env:", process.env);
-
-
+  console.log("🧪 process.env:", process.env);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -40,7 +38,7 @@ export function AuthProvider({ children }) {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
-          role: res.data.role,   // <-- Guardamos el rol acá
+          role: res.data.role, // ✅ guardamos el rol del backend
           token: res.data.token,
         });
         return true;
@@ -64,6 +62,7 @@ export function AuthProvider({ children }) {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
+          role: res.data.role || "usuario", // ✅ si viene role lo usamos, si no, default
           token: res.data.token,
         });
         return true;
