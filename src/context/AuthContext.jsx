@@ -40,6 +40,7 @@ export function AuthProvider({ children }) {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
+          role: res.data.role,   // <-- Guardamos el rol acá
           token: res.data.token,
         });
         return true;

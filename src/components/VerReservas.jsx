@@ -1,24 +1,38 @@
 // src/components/VerReservas.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext"; // corregido el path si estás usando ../context
 
 const VerReservas = () => {
+  const { user } = useAuth();
   const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Cambia esta URL si tu backend está en otro lugar
-    axios.get("https://backend-deluxe.onrender.com/api/reservas")
-      .then(response => {
-        setReservas(response.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError("Error al cargar las reservas");
-        setLoading(false);
-      });
-  }, []);
+    if (user?.role === "dueño") {
+      axios
+        .get("https://backend-deluxe.onrender.com/api/reservas")
+        .then((response) => {
+          setReservas(response.data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError("Error al cargar las reservas");
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+
+  if (!user) {
+    return <p>Por favor, inicia sesión para ver las reservas.</p>;
+  }
+
+  if (user.role !== "dueño") {
+    return <p>No tienes permiso para ver esta página.</p>;
+  }
 
   if (loading) return <p>Cargando reservas...</p>;
   if (error) return <p>{error}</p>;
@@ -40,6 +54,9 @@ const VerReservas = () => {
           ))}
         </ul>
       )}
+      <div className="logo-container">
+        <img src="/fondo-padel.jpg" alt="Logo" />
+      </div>
     </div>
   );
 };

@@ -16,10 +16,14 @@ const Header = () => {
           <li>
             <Link to="/reservar">Reservar Turno</Link>
           </li>
-          {/* Nuevo botón para ver reservas */}
-          <li>
-            <Link to="/ver-reservas">Ver Reservas</Link>
-          </li>
+
+          {/* Mostrar solo si es dueño */}
+          {user?.role === "dueño" && (
+            <li>
+              <Link to="/ver-reservas">Ver Reservas</Link>
+            </li>
+          )}
+
           {user ? (
             <li>
               <button onClick={logout}>Cerrar sesión</button>
