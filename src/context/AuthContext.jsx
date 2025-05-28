@@ -12,16 +12,13 @@ export function AuthProvider({ children }) {
   const [reservas, setReservas] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
+  console.log("✅ API_URL:", API_URL);
+  console.log("🧪 process.env:", process.env);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (err) {
-        console.error("Error al parsear usuario del localStorage", err);
-        localStorage.removeItem("user");
-      }
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
@@ -37,14 +34,13 @@ export function AuthProvider({ children }) {
     try {
       const res = await axios.post(`${API_URL}/login`, { email, password });
       if (res.data && res.data.token) {
-        const userData = {
+        setUser({
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
-          role: res.data.role || "usuario", // Aseguramos que tenga un rol
+          role: res.data.role, // ✅ guardamos el rol del backend
           token: res.data.token,
-        };
-        setUser(userData);
+        });
         return true;
       }
       return false;
@@ -66,10 +62,11 @@ export function AuthProvider({ children }) {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
-          role: res.data.role || "usuario",
+          role: res.data.role || "usuario", // ✅ si viene role lo usamos, si no, default
           token: res.data.token,
         };
         setUser(userData);
+        console.log("✅ Usuario registrado:", userData);
         return true;
       }
       return false;
