@@ -5,6 +5,7 @@ import "./Header.css"; // Asegúrate de importar los estilos
 
 const Header = () => {
   const { user, logout } = useAuth();
+   console.log("🧪 Usuario actual:", user);
 
   return (
     <header className="header">
