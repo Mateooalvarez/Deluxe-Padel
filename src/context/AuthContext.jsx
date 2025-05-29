@@ -12,6 +12,9 @@ export function AuthProvider({ children }) {
   const [reservas, setReservas] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
+  console.log("✅ API_URL:", API_URL);
+  console.log("🧪 process.env:", process.env);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -55,14 +58,15 @@ export function AuthProvider({ children }) {
         password,
       });
       if (res.data && res.data.token) {
-        setUser({
+        const userData = {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
-          role: res.data.role || "usuario", // ✅ rol por defecto "usuario"
+          role: res.data.role || "usuario", // ✅ si viene role lo usamos, si no, default
           token: res.data.token,
-        });
-        console.log("✅ Usuario registrado y logueado:", res.data);
+        };
+        setUser(userData);
+        console.log("✅ Usuario logueado:", res.data);
         return true;
       }
       return false;
@@ -77,23 +81,15 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("user");
   };
 
-  // Ejemplo de enviar token en headers para endpoint protegido
   const reservar = async (cancha, hora, userName) => {
     try {
-      if (!user || !user.token) throw new Error("Usuario no autenticado");
-      
-      const res = await axios.post(
-        `${API_URL}/reservas`,
-        { cancha, hora, userName },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`, // <- token para autorizar
-          },
-        }
-      );
-
+      const res = await axios.post(`${API_URL}/reservas`, {
+        cancha,
+        hora,
+        userName,
+      });
       if (res.data) {
-        setReservas((prev) => [...prev, res.data]);
+        setReservas([...reservas, res.data]);
       }
     } catch (err) {
       console.error("Error al reservar:", err);

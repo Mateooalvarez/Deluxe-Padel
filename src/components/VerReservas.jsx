@@ -1,62 +1,73 @@
-// src/components/VerReservas.jsx
 import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext"; // corregido el path si estás usando ../context
 
 const VerReservas = () => {
   const { user } = useAuth();
   const [reservas, setReservas] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (user?.role === "dueño") {
-      axios
-        .get("https://backend-deluxe.onrender.com/api/reservas")
-        .then((response) => {
-          setReservas(response.data);
-          setLoading(false);
-        })
-        .catch(() => {
-          setError("Error al cargar las reservas");
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
+      obtenerReservas();
     }
   }, [user]);
 
-  if (!user) {
-    return <p>Por favor, inicia sesión para ver las reservas.</p>;
-  }
+  const obtenerReservas = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/reservas`);
+      setReservas(res.data);
+    } catch (err) {
+      console.error("Error al obtener reservas:", err);
+    }
+  };
 
-  if (user.role !== "dueño") {
-    return <p>No tienes permiso para ver esta página.</p>;
-  }
+  const eliminarReserva = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/reservas/${id}`);
+      setReservas(reservas.filter((r) => r.id !== id));
+    } catch (err) {
+      console.error("Error al eliminar la reserva:", err);
+    }
+  };
 
-  if (loading) return <p>Cargando reservas...</p>;
-  if (error) return <p>{error}</p>;
+  if (!user || user.role !== "dueño") {
+    return <p>No tenés permiso para ver esta sección.</p>;
+  }
 
   return (
-    <div>
-      <h2>Reservas</h2>
+    <div style={{ padding: "20px" }}>
+      <h2>Reservas registradas</h2>
       {reservas.length === 0 ? (
-        <p>No hay reservas aún.</p>
+        <p>No hay reservas disponibles.</p>
       ) : (
-        <ul>
-          {reservas.map((reserva, index) => (
-            <li key={index}>
-              <strong>Nombre:</strong> {reserva.nombre} <br />
-              <strong>Fecha:</strong> {reserva.fecha} <br />
-              <strong>Hora:</strong> {reserva.hora} <br />
-              <strong>Cancha:</strong> {reserva.cancha}
-            </li>
-          ))}
-        </ul>
+        <table border="1" cellPadding="8" cellSpacing="0">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Cancha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reservas.map((r) => (
+              <tr key={r.id}>
+                <td>{r.nombre}</td>
+                <td>{r.fecha}</td>
+                <td>{r.hora}</td>
+                <td>{r.cancha}</td>
+                <td>{r.estado}</td>
+                <td>
+                  <button onClick={() => eliminarReserva(r.id)}>❌ Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
-      <div className="logo-container">
-        <img src="/fondo-padel.jpg" alt="Logo" />
-      </div>
     </div>
   );
 };
