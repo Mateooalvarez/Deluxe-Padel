@@ -1,4 +1,3 @@
-// src/pages/ReservaForm.jsx
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,11 +13,13 @@ const ReservaForm = () => {
 
   useEffect(() => {
     const usuarioLogueado = localStorage.getItem("usuarioLogueado");
-    if (usuarioLogueado) {
+    if (usuarioLogueado && usuarioLogueado.trim() !== "") {
       setNombre(usuarioLogueado);
       actualizarReservas(usuarioLogueado);
     } else {
+      setNombre('');
       setMisReservas([]);
+      setMensaje("Debés iniciar sesión para reservar.");
     }
   }, []);
 
@@ -34,7 +35,7 @@ const ReservaForm = () => {
     e.preventDefault();
 
     if (!nombre || !fecha || !hora) {
-      setMensaje("Por favor, complete todos los campos.");
+      setMensaje("Por favor, completá todos los campos.");
       return;
     }
 
@@ -53,7 +54,7 @@ const ReservaForm = () => {
     } else {
       const nuevosTurnos = [...turnosExistentes, nuevoTurno];
       localStorage.setItem('turnos', JSON.stringify(nuevosTurnos));
-      setMensaje("Reserva realizada con éxito.");
+      setMensaje("✅ Reserva realizada con éxito.");
       setFecha(null);
       setHora('');
       setCancha(1);
@@ -62,9 +63,7 @@ const ReservaForm = () => {
   };
 
   const handleCancelarReserva = (reservaCancelada) => {
-    // Mostrar confirmación antes de proceder con la cancelación
-    const confirmacion = window.confirm('¿Estás seguro de que deseas cancelar esta reserva?');
-
+    const confirmacion = window.confirm('¿Estás seguro de que querés cancelar esta reserva?');
     if (confirmacion) {
       const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
       const actualizados = turnosGuardados.filter(
