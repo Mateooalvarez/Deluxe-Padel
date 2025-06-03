@@ -57,21 +57,25 @@ export function AuthProvider({ children }) {
         email,
         password,
       });
+
+      console.log("🟢 Respuesta del backend en register:", res);
+
       if (res.data && res.data.token) {
         const userData = {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
-          role: res.data.role || "usuario", // ✅ si viene role lo usamos, si no, default
+          role: res.data.role || "usuario",
           token: res.data.token,
         };
         setUser(userData);
-        console.log("✅ Usuario logueado:", res.data);
+        console.log("✅ Usuario registrado correctamente:", userData);
         return true;
       }
+
       return false;
     } catch (err) {
-      console.error("Error al registrarse:", err);
+      console.error("❌ Error al registrarse:", err.response?.data || err.message);
       return false;
     }
   };
