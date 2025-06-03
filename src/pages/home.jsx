@@ -45,7 +45,6 @@ const Home = () => {
           <li>🍽️ Servicio de Cantina: Disfrutá de bebidas, comida y snacks mientras juegas</li>
           <li>🎓 Clases de Padel: Aprende y mejora tu técnica con nuestros entrenadores expertos</li>
           <li>🌟 Gran Ambiente: Un lugar amigable y profesional para todos los niveles</li>
-          <li>🥂 Espacio para Eventos: Ofrecemos salas para celebraciones y reuniones privadas</li>
         </ul>
       </section>
 
