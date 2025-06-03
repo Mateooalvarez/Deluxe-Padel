@@ -28,6 +28,7 @@ const ReservaForm = () => {
   };
 
   const handleSubmit = (e) => {
+    console.log("DEBUG:", { nombre, fecha, hora });
     e.preventDefault();
 
     if (!nombre || !fecha || !hora) {
