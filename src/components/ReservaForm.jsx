@@ -13,20 +13,16 @@ const ReservaForm = () => {
 
   useEffect(() => {
     const usuarioLogueado = localStorage.getItem("usuarioLogueado");
-    if (usuarioLogueado && usuarioLogueado.trim() !== "") {
+    if (usuarioLogueado) {
       setNombre(usuarioLogueado);
       actualizarReservas(usuarioLogueado);
-    } else {
-      setNombre('');
-      setMisReservas([]);
-      setMensaje("Debés iniciar sesión para reservar.");
     }
   }, []);
 
   const actualizarReservas = (usuario) => {
     const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
     const misTurnos = turnosGuardados.filter(
-      t => t.nombre?.toLowerCase() === usuario.toLowerCase()
+      (t) => t.nombre?.toLowerCase() === usuario?.toLowerCase()
     );
     setMisReservas(misTurnos);
   };
@@ -35,11 +31,17 @@ const ReservaForm = () => {
     e.preventDefault();
 
     if (!nombre || !fecha || !hora) {
-      setMensaje("Por favor, completá todos los campos.");
+      setMensaje("Por favor, complete todos los campos.");
       return;
     }
 
-    const nuevoTurno = { nombre, fecha: fecha.toLocaleDateString(), hora, cancha };
+    const nuevoTurno = {
+      nombre,
+      fecha: fecha.toLocaleDateString(),
+      hora,
+      cancha,
+    };
+
     const turnosExistentes = JSON.parse(localStorage.getItem('turnos')) || [];
 
     const turnoExistente = turnosExistentes.find(
@@ -78,8 +80,6 @@ const ReservaForm = () => {
       localStorage.setItem('turnos', JSON.stringify(actualizados));
       actualizarReservas(nombre);
       setMensaje("Reserva cancelada correctamente.");
-    } else {
-      setMensaje("Cancelación de reserva cancelada.");
     }
   };
 
