@@ -12,9 +12,6 @@ export function AuthProvider({ children }) {
   const [reservas, setReservas] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
 
-  console.log("✅ API_URL:", API_URL);
-  console.log("🧪 process.env:", process.env);
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -38,7 +35,7 @@ export function AuthProvider({ children }) {
           name: res.data.name,
           email: res.data.email,
           _id: res.data._id,
-          role: res.data.role, // ✅ guardamos el rol del backend
+          role: res.data.role,
           token: res.data.token,
         });
         return true;
@@ -58,8 +55,6 @@ export function AuthProvider({ children }) {
         password,
       });
 
-      console.log("🟢 Respuesta del backend en register:", res);
-
       if (res.data && res.data.token) {
         const userData = {
           name: res.data.name,
@@ -69,14 +64,13 @@ export function AuthProvider({ children }) {
           token: res.data.token,
         };
         setUser(userData);
-        console.log("✅ Usuario registrado correctamente:", userData);
-        return true;
+        return { success: true };
       }
 
-      return false;
+      return { success: false, message: "Registro fallido sin motivo especificado" };
     } catch (err) {
-      console.error("❌ Error al registrarse:", err.response?.data || err.message);
-      return false;
+      const errorMessage = err.response?.data?.message || "Error desconocido al registrarse";
+      return { success: false, message: errorMessage };
     }
   };
 
