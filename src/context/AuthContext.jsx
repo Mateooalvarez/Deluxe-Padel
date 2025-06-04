@@ -64,13 +64,12 @@ export function AuthProvider({ children }) {
           token: res.data.token,
         };
         setUser(userData);
-        return { success: true };
+        return true;
       }
-
-      return { success: false, message: "Registro fallido sin motivo especificado" };
+      return false;
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Error desconocido al registrarse";
-      return { success: false, message: errorMessage };
+      console.error("Error al registrarse:", err);
+      return false; // Volvemos a la lógica anterior simple
     }
   };
 
