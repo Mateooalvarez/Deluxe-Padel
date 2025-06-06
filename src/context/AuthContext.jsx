@@ -47,31 +47,34 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
-    try {
-      const res = await axios.post(`${API_URL}/register`, {
-        name,
-        email,
-        password,
-      });
+const register = async (name, email, password) => {
+  try {
+    const res = await axios.post(`${API_URL}/register`, {
+      name,
+      email,
+      password,
+    });
 
-      if (res.data && res.data.token) {
-        const userData = {
-          name: res.data.name,
-          email: res.data.email,
-          _id: res.data._id,
-          role: res.data.role || "usuario",
-          token: res.data.token,
-        };
-        setUser(userData);
-        return true;
-      }
-      return false;
-    } catch (err) {
-      console.error("Error al registrarse:", err);
-      return false; // Volvemos a la lógica anterior simple
+    if (res.data && res.data.token) {
+      const userData = {
+        name: res.data.name,
+        email: res.data.email,
+        _id: res.data._id,
+        role: res.data.role || "usuario",
+        token: res.data.token,
+      };
+      setUser(userData);
+      return { success: true };
     }
-  };
+    return { success: false, message: "Respuesta inválida del servidor" };
+  } catch (err) {
+    console.error("Error al registrarse:", err);
+    if (err.response && err.response.data && err.response.data.message) {
+      return { success: false, message: err.response.data.message };
+    }
+    return { success: false, message: "Error del servidor" };
+  }
+};
 
   const logout = () => {
     setUser(null);
