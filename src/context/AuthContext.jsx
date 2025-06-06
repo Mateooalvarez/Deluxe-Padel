@@ -55,19 +55,25 @@ export function AuthProvider({ children }) {
         return { success: false, message: res.data.message };
       }
 
-      if (res.data && res.data.success === true) {
-        return { success: true, message: res.data.message };
-      }
+      // ✅ Usuario creado correctamente
+      return { success: true, message: "Usuario registrado correctamente. Ahora podés iniciar sesión." };
 
-      return { success: false, message: "Respuesta inválida del servidor" };
     } catch (err) {
       console.error("Error al registrarse:", err);
+
+      // ✅ Si el usuario se creó, puede haber error en la respuesta, pero no lo mostramos como "error del servidor"
+      if (err.response && err.response.status === 201) {
+        return { success: true, message: "Usuario registrado correctamente. Ahora podés iniciar sesión." };
+      }
+
       if (err.response && err.response.data && err.response.data.message) {
         return { success: false, message: err.response.data.message };
       }
-      return { success: false, message: "Error del servidor" };
+
+      return { success: false, message: "Ocurrió un error inesperado." };
     }
   };
+
 
   const logout = () => {
     setUser(null);
