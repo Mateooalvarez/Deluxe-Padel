@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const res = await axios.post(`${API_URL}/login`, { email, password });
-      if (res.data && res.data.token) {
+      if (res.data && res.data.success === true && res.data.token) {
         setUser({
           name: res.data.name,
           email: res.data.email,
@@ -49,19 +49,14 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/register`, {
-        name,
-        email,
-        password,
-      });
+      const res = await axios.post(`${API_URL}/register`, { name, email, password });
 
-      // Revisamos el campo success
       if (res.data && res.data.success === false) {
         return { success: false, message: res.data.message };
       }
 
-      if (res.data && res.data.token) {
-        return { success: true };
+      if (res.data && res.data.success === true) {
+        return { success: true, message: res.data.message };
       }
 
       return { success: false, message: "Respuesta inválida del servidor" };
@@ -73,7 +68,6 @@ export function AuthProvider({ children }) {
       return { success: false, message: "Error del servidor" };
     }
   };
-
 
   const logout = () => {
     setUser(null);
