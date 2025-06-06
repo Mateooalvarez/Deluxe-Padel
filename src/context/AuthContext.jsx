@@ -47,28 +47,32 @@ export function AuthProvider({ children }) {
     }
   };
 
-const register = async (name, email, password) => {
-  try {
-    const res = await axios.post(`${API_URL}/register`, {
-      name,
-      email,
-      password,
-    });
+  const register = async (name, email, password) => {
+    try {
+      const res = await axios.post(`${API_URL}/register`, {
+        name,
+        email,
+        password,
+      });
 
-    if (res.data && res.data.token) {
-      // No seteamos el usuario automáticamente
-      return { success: true };
-    }
+      // Revisamos el campo success
+      if (res.data && res.data.success === false) {
+        return { success: false, message: res.data.message };
+      }
 
-    return { success: false, message: "Respuesta inválida del servidor" };
-  } catch (err) {
-    console.error("Error al registrarse:", err);
-    if (err.response && err.response.data && err.response.data.message) {
-      return { success: false, message: err.response.data.message };
+      if (res.data && res.data.token) {
+        return { success: true };
+      }
+
+      return { success: false, message: "Respuesta inválida del servidor" };
+    } catch (err) {
+      console.error("Error al registrarse:", err);
+      if (err.response && err.response.data && err.response.data.message) {
+        return { success: false, message: err.response.data.message };
+      }
+      return { success: false, message: "Error del servidor" };
     }
-    return { success: false, message: "Error del servidor" };
-  }
-};
+  };
 
 
   const logout = () => {
