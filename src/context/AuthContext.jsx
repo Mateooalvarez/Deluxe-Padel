@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Necesario para redirección
 
 const AuthContext = createContext();
 
@@ -12,7 +11,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [reservas, setReservas] = useState([]);
   const API_URL = import.meta.env.VITE_API_URL;
-  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -53,20 +51,21 @@ export function AuthProvider({ children }) {
     try {
       const res = await axios.post(`${API_URL}/register`, { name, email, password });
 
-      if (res.data && res.data.success === true) {
-        // Mostrar mensaje opcional (alert, toast, etc.)
-        alert("¡Registro exitoso! Ahora iniciá sesión.");
-        navigate("/login");
-        return { success: true };
+      if (res.data && res.data.success === false) {
+        return { success: false, message: res.data.message };
       }
 
-      return { success: false, message: res.data.message || "No se pudo registrar el usuario." };
+      if (res.data && res.data.success === true) {
+        return { success: true, message: res.data.message };
+      }
+
+      return { success: false, message: "Respuesta inválida del servidor" };
     } catch (err) {
       console.error("Error al registrarse:", err);
       if (err.response && err.response.data && err.response.data.message) {
         return { success: false, message: err.response.data.message };
       }
-      return { success: false, message: "No se pudo completar el registro." };
+      return { success: false, message: "Error del servidor" };
     }
   };
 
