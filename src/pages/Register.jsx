@@ -12,27 +12,28 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-const handleRegister = async (e) => {
-  e.preventDefault();
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-  if (!name || !email || !password || !confirmPassword) {
-    setError("Por favor completá todos los campos");
-    return;
-  }
+    if (!name || !email || !password || !confirmPassword) {
+      setError("Por favor completá todos los campos");
+      return;
+    }
 
-  if (password !== confirmPassword) {
-    setError("Las contraseñas no coinciden");
-    return;
-  }
+    if (password !== confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
 
-  const result = await register(name, email, password);
+    const result = await register(name, email, password);
 
-  if (result.success) {
-    navigate("/login");
-  } else {
-    setError(result.message || "Error al registrarse");
-  }
-};
+    if (result.success) {
+      alert(result.message || "Usuario registrado correctamente");
+      navigate("/login");
+    } else {
+      setError(result.message || "Error al registrarse");
+    }
+  };
 
   return (
     <div className="register-container">

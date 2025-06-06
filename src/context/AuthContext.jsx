@@ -49,31 +49,34 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/register`, { name, email, password });
+      const res = await axios.post(`${API_URL}/register`, {
+        name,
+        email,
+        password,
+        role: "usuario", // Agregado para que el backend no falle
+      });
 
       if (res.data && res.data.success === false) {
         return { success: false, message: res.data.message };
       }
 
-      // ✅ Usuario creado correctamente
-      return { success: true, message: "Usuario registrado correctamente. Ahora podés iniciar sesión." };
-
+      return {
+        success: true,
+        message: "Usuario registrado correctamente. Ahora podés iniciar sesión.",
+      };
     } catch (err) {
       console.error("Error al registrarse:", err);
 
-      // ✅ Si el usuario se creó, puede haber error en la respuesta, pero no lo mostramos como "error del servidor"
-      if (err.response && err.response.status === 201) {
-        return { success: true, message: "Usuario registrado correctamente. Ahora podés iniciar sesión." };
-      }
-
-      if (err.response && err.response.data && err.response.data.message) {
+      if (err.response && err.response.status === 400) {
         return { success: false, message: err.response.data.message };
       }
 
-      return { success: false, message: "Ocurrió un error inesperado." };
+      return {
+        success: false,
+        message: "Ocurrió un error inesperado al registrarse.",
+      };
     }
   };
-
 
   const logout = () => {
     setUser(null);
