@@ -56,9 +56,16 @@ export function AuthProvider({ children }) {
         role: "usuario",
       });
 
+      if (res.data && res.data.success) {
+        return {
+          success: true,
+          message: res.data.message || "Usuario registrado correctamente. Ahora podés iniciar sesión.",
+        };
+      }
+
       return {
-        success: true,
-        message: "Usuario registrado correctamente. Ahora podés iniciar sesión.",
+        success: false,
+        message: res.data?.message || "No se pudo registrar el usuario",
       };
     } catch (err) {
       console.error("Error al registrarse:", err);
@@ -73,6 +80,7 @@ export function AuthProvider({ children }) {
       };
     }
   };
+
 
   const logout = () => {
     setUser(null);
