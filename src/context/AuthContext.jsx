@@ -47,39 +47,50 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
+  // Ruta de registro
+  router.post('/register', async (req, res) => {
+    const { name, email, password, role } = req.body;
     try {
-      const res = await axios.post(`${API_URL}/register`, {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'El correo ya está registrado' });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const newUser = new User({
         name,
         email,
-        password,
-        role: "usuario",
+        password: hashedPassword,
+        role: role && role.trim() !== '' ? role : 'usuario',
       });
 
-      if (res.data && res.data.success) {
-        return {
-          success: true,
-          message: res.data.message || "Usuario registrado correctamente. Ahora podés iniciar sesión.",
-        };
-      }
+      await newUser.save();
 
-      return {
+      const token = jwt.sign(
+        { id: newUser._id, email: newUser.email, role: newUser.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      return res.status(201).json({
+        success: true,
+        message: 'Usuario registrado correctamente',
+        name: newUser.name,
+        email: newUser.email,
+        _id: newUser._id,
+        role: newUser.role,
+        token,
+      });
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+      res.status(500).json({
         success: false,
-        message: res.data?.message || "No se pudo registrar el usuario",
-      };
-    } catch (err) {
-      console.error("Error al registrarse:", err);
-
-      if (err.response?.data?.message) {
-        return { success: false, message: err.response.data.message };
-      }
-
-      return {
-        success: false,
-        message: "Ocurrió un error inesperado al registrarse.",
-      };
+        message: "Error al registrar el usuario",
+      });
     }
-  };
+  });
 
 
   const logout = () => {
