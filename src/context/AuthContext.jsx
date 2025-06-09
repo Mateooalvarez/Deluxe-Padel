@@ -47,32 +47,23 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
-    try {
-      const res = await axios.post(`${API_URL}/register`, {
-        name,
-        email,
-        password,
-        role: "usuario",
-      });
+const register = async (name, email, password) => {
+  try {
+    const res = await axios.post(`${API_URL}/register`, {
+      name, email, password, role: 'usuario'
+    });
 
-      return {
-        success: true,
-        message: "Usuario registrado correctamente. Ahora podés iniciar sesión.",
-      };
-    } catch (err) {
-      console.error("Error al registrarse:", err);
-
-      if (err.response?.data?.message) {
-        return { success: false, message: err.response.data.message };
-      }
-
-      return {
-        success: false,
-        message: "Ocurrió un error inesperado al registrarse.",
-      };
+    if (res.data.success) {
+      return { success: true, message: res.data.message };
+    } else {
+      return { success: false, message: res.data.message || 'Error al registrarse' };
     }
-  };
+  } catch (err) {
+    console.error("Error al registrarse:", err);
+    const msg = err.response?.data?.message || 'Error al conectarse al servidor';
+    return { success: false, message: msg };
+  }
+};
 
   const logout = () => {
     setUser(null);

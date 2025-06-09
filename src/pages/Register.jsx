@@ -28,16 +28,10 @@ const Register = () => {
     const result = await register(name, email, password);
 
     if (result.success) {
-      alert(result.message || "Usuario registrado correctamente");
-      // Limpiar los campos
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setError("");
-      navigate("/login");
+      alert(result.message);
+      navigate('/login');
     } else {
-      setError(result.message || "Error al registrarse");
+      setError(result.message);
     }
   };
 
