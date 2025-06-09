@@ -29,6 +29,12 @@ const Register = () => {
 
     if (result.success) {
       alert(result.message || "Usuario registrado correctamente");
+      // Limpiar los campos
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setError("");
       navigate("/login");
     } else {
       setError(result.message || "Error al registrarse");

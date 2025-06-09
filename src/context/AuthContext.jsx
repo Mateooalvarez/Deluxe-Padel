@@ -53,12 +53,8 @@ export function AuthProvider({ children }) {
         name,
         email,
         password,
-        role: "usuario", // Agregado para que el backend no falle
+        role: "usuario",
       });
-
-      if (res.data && res.data.success === false) {
-        return { success: false, message: res.data.message };
-      }
 
       return {
         success: true,
@@ -67,7 +63,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error("Error al registrarse:", err);
 
-      if (err.response && err.response.status === 400) {
+      if (err.response?.data?.message) {
         return { success: false, message: err.response.data.message };
       }
 
