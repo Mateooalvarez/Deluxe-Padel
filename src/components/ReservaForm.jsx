@@ -6,6 +6,11 @@ import './ReservaForm.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const horasDisponibles = [
+  '09:00', '10:30', '12:00', '13:30', '15:00',
+  '16:30', '18:00', '19:30', '21:00', '22:30', '00:00'
+];
+
 const ReservaForm = () => {
   const [nombre, setNombre] = useState('');
   const [fecha, setFecha] = useState(null);
@@ -13,6 +18,7 @@ const ReservaForm = () => {
   const [cancha, setCancha] = useState(1);
   const [mensaje, setMensaje] = useState('');
   const [misReservas, setMisReservas] = useState([]);
+  const [reservasDelDia, setReservasDelDia] = useState([]);
 
   useEffect(() => {
     const usuarioLogueado = localStorage.getItem("usuarioLogueado");
@@ -22,6 +28,23 @@ const ReservaForm = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const obtenerReservasDelDia = async () => {
+      if (fecha && cancha) {
+        const fechaStr = fecha.toLocaleDateString('es-AR');
+        try {
+          const res = await axios.get(`${API_URL}/reservas/disponibles`, {
+            params: { fecha: fechaStr, cancha }
+          });
+          setReservasDelDia(res.data);
+        } catch (error) {
+          console.error('Error obteniendo reservas del día:', error);
+        }
+      }
+    };
+    obtenerReservasDelDia();
+  }, [fecha, cancha]);
+
   const actualizarReservas = async (usuario) => {
     try {
       const response = await axios.get(`${API_URL}/reservas/usuario/${usuario}`);
@@ -29,6 +52,23 @@ const ReservaForm = () => {
     } catch (error) {
       console.error("Error al obtener reservas", error);
     }
+  };
+
+  const filtrarHoras = () => {
+    if (!fecha) return horasDisponibles;
+
+    const ahora = new Date();
+    const fechaSeleccionada = new Date(fecha);
+
+    return horasDisponibles.filter(h => {
+      const [hH, hM] = h.split(':');
+      const horaFecha = new Date(fechaSeleccionada);
+      horaFecha.setHours(hH, hM, 0, 0);
+
+      const horaYaReservada = reservasDelDia.some(r => r.hora === h);
+
+      return horaFecha > ahora && !horaYaReservada;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -91,7 +131,7 @@ const ReservaForm = () => {
         <label>Hora:</label>
         <select value={hora} onChange={(e) => setHora(e.target.value)}>
           <option value="">Seleccione la hora</option>
-          {['09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00', '22:30', '00:00'].map((horaDisponible) => (
+          {filtrarHoras().map(horaDisponible => (
             <option key={horaDisponible} value={horaDisponible}>{horaDisponible}</option>
           ))}
         </select>
