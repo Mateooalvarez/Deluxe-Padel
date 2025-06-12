@@ -25,8 +25,7 @@
   width: 100%;
   max-width: 850px;
   margin: 0 auto; /* centra la tabla */
-  border-collapse: separate; /* para poder usar border-spacing */
-  border-spacing: 0 12px; /* espacio vertical entre filas */
+  border-collapse: collapse; /* bordes colapsados */
   box-shadow: 0 0 10px rgba(227, 6, 19, 0.6);
   border-radius: 12px;
   overflow: hidden;
@@ -41,14 +40,14 @@
 
 .ver-reservas-table th,
 .ver-reservas-table td {
-  padding: 16px 25px;
-  border: none;
+  padding: 18px 25px;
+  border: 1px solid #444; /* borde sutil para separar celdas */
   text-align: center;
   vertical-align: middle;
   background-color: #222;
-  font-size: 1.1rem;
-  min-width: 110px; /* ancho mínimo para que no se junte */
-  border-radius: 8px;
+  font-size: 1.15rem;
+  min-width: 120px;
+  border-radius: 0; /* sin radios en celdas para evitar bordes irregulares */
 }
 
 .ver-reservas-table tbody tr:hover td {

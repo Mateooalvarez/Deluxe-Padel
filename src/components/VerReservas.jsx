@@ -40,9 +40,9 @@ const VerReservas = () => {
     <div className="ver-reservas-container">
       <h2>Reservas registradas</h2>
       {reservas.length === 0 ? (
-        <p className="no-reservas-msg">No hay reservas disponibles.</p>
+        <p>No hay reservas disponibles.</p>
       ) : (
-        <table className="reservas-table">
+        <table className="ver-reservas-table">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -55,20 +55,14 @@ const VerReservas = () => {
           </thead>
           <tbody>
             {reservas.map((r) => (
-              <tr key={r._id}>
+              <tr key={r.id}>
                 <td>{r.nombre}</td>
                 <td>{r.fecha}</td>
                 <td>{r.hora}</td>
                 <td>{r.cancha}</td>
-                <td>{r.estado || "Pendiente"}</td>
+                <td>{r.estado}</td>
                 <td>
-                  <button
-                    className="btn-eliminar"
-                    onClick={() => eliminarReserva(r._id)}
-                    title="Eliminar reserva"
-                  >
-                    ❌ Eliminar
-                  </button>
+                  <button className="ver-reservas-button" onClick={() => eliminarReserva(r.id)}>❌ Eliminar</button>
                 </td>
               </tr>
             ))}
@@ -77,6 +71,5 @@ const VerReservas = () => {
       )}
     </div>
   );
-};
-
+}
 export default VerReservas;
