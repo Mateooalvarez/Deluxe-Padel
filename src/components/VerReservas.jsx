@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import "./VerReservas.css";  // archivo CSS externo
+import "./VerReservas.css";
 
 const VerReservas = () => {
   const { user } = useAuth();
@@ -55,14 +55,16 @@ const VerReservas = () => {
           </thead>
           <tbody>
             {reservas.map((r) => (
-              <tr key={r.id}>
+              <tr key={r._id}>
                 <td>{r.nombre}</td>
-                <td>{r.fecha}</td>
-                <td>{r.hora}</td>
+                <td className="center-cell">{r.fecha}</td>
+                <td className="center-cell bordered-cell">{r.hora}</td>
                 <td>{r.cancha}</td>
                 <td>{r.estado}</td>
                 <td>
-                  <button className="ver-reservas-button" onClick={() => eliminarReserva(r.id)}>❌ Eliminar</button>
+                  <button className="ver-reservas-button" onClick={() => eliminarReserva(r._id)}>
+                    ❌ Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -71,5 +73,6 @@ const VerReservas = () => {
       )}
     </div>
   );
-}
+};
+
 export default VerReservas;
