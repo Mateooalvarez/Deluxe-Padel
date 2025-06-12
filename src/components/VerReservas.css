@@ -1,36 +1,40 @@
 .ver-reservas-container {
   max-width: 900px;
-  margin: 30px auto 60px auto;
-  padding: 30px 20px;
+  margin: 40px auto 60px auto; /* más margen arriba y abajo */
+  padding: 40px 30px; /* padding más amplio para que no quede pegado */
   background-color: #1a1a1a;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   font-family: 'Montserrat', sans-serif;
   color: #ccc;
+  text-align: center; /* centra todo el texto dentro del contenedor */
 }
 
 .ver-reservas-container h2 {
   color: #e30613;
-  font-size: 2rem;
-  margin-bottom: 30px;
+  font-size: 2.2rem;
+  margin-bottom: 40px; /* más separación abajo */
   border-bottom: 2px solid #e30613;
   display: inline-block;
-  padding-bottom: 10px;
-  text-align: center;
+  padding-bottom: 12px;
   width: 100%;
+  text-align: center;
 }
 
 .ver-reservas-container p {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #ccc;
+  margin-top: 30px; /* espacio arriba si hay texto */
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .ver-reservas-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #ccc;
+  margin: 0 auto; /* centra la tabla */
 }
 
 .ver-reservas-table thead tr {
@@ -40,7 +44,7 @@
 
 .ver-reservas-table th,
 .ver-reservas-table td {
-  padding: 12px 15px;
+  padding: 16px 20px; /* más espacio en celdas */
   border: 1px solid #333;
   text-align: center;
 }
@@ -57,7 +61,7 @@
   background-color: #e30613;
   border: none;
   color: white;
-  padding: 8px 15px;
+  padding: 10px 20px; /* botón más grande y cómodo */
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
