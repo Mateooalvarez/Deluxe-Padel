@@ -1,5 +1,5 @@
-// src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -9,15 +9,15 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [users, setUsers] = useState(() => {
-    const storedUsers = localStorage.getItem("users");
-    return storedUsers ? JSON.parse(storedUsers) : [];
-  });
+  const [reservas, setReservas] = useState([]);
+  const API_URL = process.env.REACT_APP_API_URL;
 
-  const [reservas, setReservas] = useState(() => {
-    const storedReservas = localStorage.getItem("reservas");
-    return storedReservas ? JSON.parse(storedReservas) : [];
-  });
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -27,52 +27,72 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  const login = (email, password) => {
-    const foundUser = users.find((user) => user.email === email && user.password === password);
-    if (foundUser) {
-      setUser(foundUser);
-      return true;
-    }
-    return false;
-  };
-
-  const register = (name, email, password) => {
-    const userExists = users.some((user) => user.email === email);
-    if (userExists) {
+  const login = async (email, password) => {
+    try {
+      const res = await axios.post(`${API_URL}/login`, { email, password });
+      if (res.data && res.data.token) {
+        setUser({
+          name: res.data.name,
+          email: res.data.email,
+          _id: res.data._id,
+          token: res.data.token,
+        });
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Error al iniciar sesión:", err);
       return false;
     }
+  };
 
-    const newUser = { name, email, password };
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    setUser(newUser);
-    return true;
+  const register = async (name, email, password) => {
+    try {
+      const res = await axios.post(`${API_URL}/register`, {
+        name,
+        email,
+        password,
+      });
+      if (res.data && res.data.token) {
+        setUser({
+          name: res.data.name,
+          email: res.data.email,
+          _id: res.data._id,
+          token: res.data.token,
+        });
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Error al registrarse:", err);
+      return false;
+    }
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user");
   };
 
-  // Función para realizar la reserva
-  const reservar = (cancha, hora, userName) => {
-    const reserva = { userName, hora, cancha };
-    setReservas([...reservas, reserva]);
-    localStorage.setItem("reservas", JSON.stringify([...reservas, reserva]));
+  const reservar = async (cancha, hora, userName) => {
+    try {
+      const res = await axios.post(`${API_URL}/reservas`, {
+        cancha,
+        hora,
+        userName,
+      });
+      if (res.data) {
+        setReservas([...reservas, res.data]);
+      }
+    } catch (err) {
+      console.error("Error al reservar:", err);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        users,
         reservas,
         login,
         register,
