@@ -12,7 +12,7 @@ const Home = () => {
           <h1>Deluxe Padel Club</h1>
           <p>Tu lugar para vivir el pádel al máximo</p>
           {user ? (
-            <h2 className="bienvenida">¡Bienvenido, {user.displayName || user.email}!</h2>
+            <h2 className="bienvenida">¡Bienvenido, {user.name || user.email}!</h2>
           ) : (
             <p className="aviso-login">No estás autenticado. Por favor, inicia sesión.</p>
           )}
@@ -45,18 +45,17 @@ const Home = () => {
           <li>🍽️ Servicio de Cantina: Disfrutá de bebidas, comida y snacks mientras juegas</li>
           <li>🎓 Clases de Padel: Aprende y mejora tu técnica con nuestros entrenadores expertos</li>
           <li>🌟 Gran Ambiente: Un lugar amigable y profesional para todos los niveles</li>
-          <li>🥂 Espacio para Eventos: Ofrecemos salas para celebraciones y reuniones privadas</li>
         </ul>
       </section>
 
       <section className="contacto">
         <h2>Contacto</h2>
-        <p>📞 WhatsApp: {" "}
+        <p>📞 WhatsApp:{" "}
           <a href="https://wa.me/5492317460106" target="_blank" rel="noopener noreferrer">
             +54 9 2317 460106
           </a>
         </p>
-        <p>📧 Correo: {" "}
+        <p>📧 Correo:{" "}
           <a href="mailto:deluxepade9dj@gmail.com">
             deluxepade9dj@gmail.com
           </a>
@@ -69,10 +68,21 @@ const Home = () => {
         </p>
       </section>
 
+      {user?.role === "dueño" && (
+        <section className="panel-duenio">
+          <h2>🔒 Panel del Dueño</h2>
+          <p>Desde aquí vas a poder acceder al listado completo de reservas, gestionar horarios y consultar estadísticas.</p>
+          {/* En el siguiente paso agregamos los botones o enlaces si querés */}
+        </section>
+      )}
+
       <footer className="footer">
         <p>&copy; {new Date().getFullYear()} Deluxe Padel Club. Todos los derechos reservados.</p>
         <p>
-          Seguinos en <a href="https://www.instagram.com/deluxepadel.9dj?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">Instagram</a>
+          Seguinos en{" "}
+          <a href="https://www.instagram.com/deluxepadel.9dj?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">
+            Instagram
+          </a>
         </p>
         <div className="logo-container">
           <img src="/fondo-padel.jpg" alt="Logo" />

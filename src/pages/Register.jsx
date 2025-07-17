@@ -25,12 +25,13 @@ const Register = () => {
       return;
     }
 
-    const success = await register(name, email, password);
+    const result = await register(name, email, password);
 
-    if (success) {
-      navigate("/login");
+    if (result.success) {
+      alert(result.message);
+      navigate('/login');
     } else {
-      setError("El correo ya está registrado");
+      setError(result.message);
     }
   };
 

@@ -1,8 +1,10 @@
-// src/pages/ReservaForm.jsx
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import './ReservaForm.css';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ReservaForm = () => {
   const [nombre, setNombre] = useState('');
@@ -17,70 +19,59 @@ const ReservaForm = () => {
     if (usuarioLogueado) {
       setNombre(usuarioLogueado);
       actualizarReservas(usuarioLogueado);
-    } else {
-      setMisReservas([]);
     }
   }, []);
 
-  const actualizarReservas = (usuario) => {
-    const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
-    const misTurnos = turnosGuardados.filter(
-      t => t.nombre?.toLowerCase() === usuario.toLowerCase()
-    );
-    setMisReservas(misTurnos);
+  const actualizarReservas = async (usuario) => {
+    try {
+      const response = await axios.get(`${API_URL}/reservas/usuario/${usuario}`);
+      setMisReservas(response.data);
+    } catch (error) {
+      console.error("Error al obtener reservas", error);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nombre || !fecha || !hora) {
+    if (!nombre || !fecha || !hora || !cancha) {
       setMensaje("Por favor, complete todos los campos.");
       return;
     }
 
-    const nuevoTurno = { nombre, fecha: fecha.toLocaleDateString(), hora, cancha };
-    const turnosExistentes = JSON.parse(localStorage.getItem('turnos')) || [];
+    try {
+      const reserva = {
+        nombre,
+        fecha: fecha.toLocaleDateString('es-AR'),
+        hora,
+        cancha,
+      };
 
-    const turnoExistente = turnosExistentes.find(
-      (turno) =>
-        turno.fecha === nuevoTurno.fecha &&
-        turno.hora === nuevoTurno.hora &&
-        turno.cancha === nuevoTurno.cancha
-    );
-
-    if (turnoExistente) {
-      setMensaje("Esta hora ya está reservada para la cancha seleccionada.");
-    } else {
-      const nuevosTurnos = [...turnosExistentes, nuevoTurno];
-      localStorage.setItem('turnos', JSON.stringify(nuevosTurnos));
-      setMensaje("Reserva realizada con éxito.");
+      const res = await axios.post(`${API_URL}/reservas`, reserva);
+      setMensaje(res.data.mensaje);
       setFecha(null);
       setHora('');
       setCancha(1);
       actualizarReservas(nombre);
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setMensaje("Esta hora ya está reservada para la cancha seleccionada.");
+      } else {
+        setMensaje("Error al crear la reserva.");
+      }
     }
   };
 
-  const handleCancelarReserva = (reservaCancelada) => {
-    // Mostrar confirmación antes de proceder con la cancelación
-    const confirmacion = window.confirm('¿Estás seguro de que deseas cancelar esta reserva?');
-
+  const handleCancelarReserva = async (id) => {
+    const confirmacion = window.confirm('¿Estás seguro de que querés cancelar esta reserva?');
     if (confirmacion) {
-      const turnosGuardados = JSON.parse(localStorage.getItem('turnos')) || [];
-      const actualizados = turnosGuardados.filter(
-        (t) =>
-          !(
-            t.nombre === reservaCancelada.nombre &&
-            t.fecha === reservaCancelada.fecha &&
-            t.hora === reservaCancelada.hora &&
-            t.cancha === reservaCancelada.cancha
-          )
-      );
-      localStorage.setItem('turnos', JSON.stringify(actualizados));
-      actualizarReservas(nombre);
-      setMensaje("Reserva cancelada correctamente.");
-    } else {
-      setMensaje("Cancelación de reserva cancelada.");
+      try {
+        await axios.delete(`${API_URL}/reservas/${id}`);
+        actualizarReservas(nombre);
+        setMensaje("Reserva cancelada correctamente.");
+      } catch (error) {
+        setMensaje("Error al cancelar la reserva.");
+      }
     }
   };
 
@@ -118,11 +109,11 @@ const ReservaForm = () => {
           <div style={{ marginTop: '20px' }}>
             <h3>Mis Reservas</h3>
             <ul style={{ listStyle: 'none', padding: 0 }}>
-              {misReservas.map((reserva, index) => (
-                <li key={index} style={{ marginBottom: '10px' }}>
+              {misReservas.map((reserva) => (
+                <li key={reserva._id} style={{ marginBottom: '10px' }}>
                   📅 {reserva.fecha} 🕒 {reserva.hora} - Cancha {reserva.cancha}{" "}
                   <button
-                    onClick={() => handleCancelarReserva(reserva)}
+                    onClick={() => handleCancelarReserva(reserva._id)}
                     style={{
                       marginLeft: '10px',
                       backgroundColor: '#e30613',
@@ -141,6 +132,9 @@ const ReservaForm = () => {
           </div>
         )}
       </form>
+      <div className="logo-container">
+        <img src="/fondo-padel.jpg" alt="Logo" />
+      </div>
     </div>
   );
 };

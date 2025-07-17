@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Header from "./components/header"; 
 import { useAuth } from "./context/AuthContext";
+import VerReservas from "./components/VerReservas"; 
 
 function App() {
   const { user } = useAuth(); // Verifica si el usuario está autenticado
@@ -27,6 +28,9 @@ function App() {
 
         {/* Ruta Register, para crear una cuenta */}
         <Route path="/register" element={<Register />} />
+
+        {/* ✅ Nueva ruta para ver reservas */}
+        <Route path="/ver-reservas" element={user ? <VerReservas /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );

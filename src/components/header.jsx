@@ -5,6 +5,7 @@ import "./Header.css"; // Asegúrate de importar los estilos
 
 const Header = () => {
   const { user, logout } = useAuth();
+   console.log("🧪 Usuario actual:", user);
 
   return (
     <header className="header">
@@ -16,6 +17,14 @@ const Header = () => {
           <li>
             <Link to="/reservar">Reservar Turno</Link>
           </li>
+
+          {/* Mostrar solo si es dueño */}
+          {user?.role === "dueño" && (
+            <li>
+              <Link to="/ver-reservas">Ver Reservas</Link>
+            </li>
+          )}
+
           {user ? (
             <li>
               <button onClick={logout}>Cerrar sesión</button>
